@@ -77,7 +77,7 @@ function clean(callback) {
 
 function watchFiles() {
   watch(["src/**/*.html"], html).on("change", browsersync.reload);
-  watch(["src/css/**/*.scss"], styles);
+  watch(["src/scss/**/*.scss"], styles);
   watch(["src/js/**/*.js"], scripts);
   watch(["src/img/**/*.*"], images);
   watch(["src/fonts/**/*.*"], fonts);
