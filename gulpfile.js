@@ -4,7 +4,7 @@ const { src, dest, parallel, series, watch } = require("gulp");
 const browsersync = require("browser-sync").create();
 const autoprefixer = require("gulp-autoprefixer");
 const uglify = require("gulp-uglify-es").default;
-const sass = require("gulp-sass");
+const sass = require("gulp-sass")(require("sass"));
 const rigger = require("gulp-rigger");
 const cleancss = require("gulp-clean-css");
 const imagemin = require("gulp-imagemin");
@@ -28,30 +28,30 @@ function html() {
 }
 
 function styles() {
-  return src("src/" + preprocessor + "/main." + preprocessor + "")
+  return src("src/assets/" + preprocessor + "/main." + preprocessor + "")
     .pipe(sass())
     .pipe(
-      autoprefixer({ overrideBrowserslist: ["last 5 versions"], grid: true })
+      autoprefixer({ overrideBrowserslist: ["last 3 versions"], grid: true })
     )
     .pipe(
       cleancss({
         level: { 1: { specialComments: 0 } },
       })
     )
-    .pipe(dest("dist/css/"))
+    .pipe(dest("dist/assets/css/"))
     .pipe(browsersync.stream());
 }
 
 function scripts() {
-  return src("src/js/main.js")
+  return src("src/assets/js/main.js")
     .pipe(rigger())
     .pipe(uglify())
-    .pipe(dest("dist/js/"))
+    .pipe(dest("dist/assets/js/"))
     .pipe(browsersync.stream());
 }
 
 function images() {
-  return src("src/img/**/*.*")
+  return src("src/assets/img/**/*.*")
     .pipe(
       imagemin({
         interlaced: true,
@@ -64,11 +64,11 @@ function images() {
         ],
       })
     )
-    .pipe(dest("dist/img/"));
+    .pipe(dest("dist/assets/img/"));
 }
 
 function fonts() {
-  return src("src/fonts/**/*.*").pipe(dest("dist/fonts/"));
+  return src("src/assets/fonts/**/*.*").pipe(dest("dist/assets/fonts/"));
 }
 
 function clean(callback) {
@@ -77,10 +77,10 @@ function clean(callback) {
 
 function watchFiles() {
   watch(["src/**/*.html"], html).on("change", browsersync.reload);
-  watch(["src/scss/**/*.scss"], styles);
-  watch(["src/js/**/*.js"], scripts);
-  watch(["src/img/**/*.*"], images);
-  watch(["src/fonts/**/*.*"], fonts);
+  watch(["src/assets/scss/**/*.scss"], styles);
+  watch(["src/assets/js/**/*.js"], scripts);
+  watch(["src/assets/img/**/*.*"], images);
+  watch(["src/assets/fonts/**/*.*"], fonts);
 }
 
 const build = series(clean, parallel(styles, scripts, images, fonts, html));
